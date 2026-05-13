@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gomitas Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --rosa:   #ba0ce5;
+      --lila:   #c084fc;
+      --morado: #ed8ef4;
+      --oscuro: #e684d4;
+      --blanco: #fff8ff;
+      --texto:  #2d1b4e;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--rosa) 0%, var(--lila) 40%, var(--morado) 70%, var(--oscuro) 100%);
+      background-attachment: fixed;
+      color: var(--texto);
+    }
+
+    header {
+      text-align: center;
+      padding: 50px 20px 30px;
+    }
+
+    header h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      color: var(--blanco);
+      text-shadow: 3px 3px 0 rgba(100,0,150,0.3);
+    }
+
+    header p {
+      color: rgba(255,255,255,0.8);
+      font-size: 0.95rem;
+      margin-top: 6px;
+      letter-spacing: 0.12em;
+    }
+
+    .wrap {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.18);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 24px;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(20px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    .card h2 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.4rem;
+      color: var(--blanco);
+      margin-bottom: 20px;
+    }
+
+    /* ── PRODUCTOS ── */
+    .producto {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      transition: background 0.2s;
+    }
+
+    .producto:hover { background: rgba(255,255,255,0.22); }
+
+    .prod-info { display: flex; flex-direction: column; gap: 2px; }
+
+    .prod-nombre {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.15rem;
+      color: var(--blanco);
+    }
+
+    .prod-precio {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.65);
+      letter-spacing: 0.05em;
+    }
+
+    .prod-derecha {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+
+    .prod-stock {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.5rem;
+      color: var(--blanco);
+      line-height: 1;
+    }
+
+    .prod-stock span {
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 400;
+      opacity: 0.6;
+      margin-left: 2px;
+    }
+
+    /* ── BADGES ── */
+    .badge {
+      display: inline-block;
+      padding: 3px 12px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .badge-lleno  { background: rgba(134,239,172,0.3); color: #d1fae5; }
+    .badge-medio  { background: rgba(147,197,253,0.3); color: #dbeafe; }
+    .badge-poco   { background: rgba(253,224,71,0.3);  color: #fef9c3; }
+    .badge-ninguno{ background: rgba(252,165,165,0.3); color: #fee2e2; }
+
+    /* ── BARRA DE STOCK ── */
+    .barra-wrap {
+      width: 100%;
+      height: 5px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 10px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+
+    .barra-fill {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.6s ease;
+    }
+
+    /* ── SECCIÓN DE CÓDIGO ── */
+    .codigo-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 10px;
+    }
+
+    pre {
+      background: rgba(0,0,0,0.35);
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 0.8rem;
+      color: #f0abfc;
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.7;
+    }
+
+    .comment { color: rgba(255,255,255,0.35); }
+    .key     { color: #93c5fd; }
+    .str     { color: #86efac; }
+    .num     { color: #fde68a; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 480px) {
+      .producto { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .prod-derecha { align-items: flex-start; flex-direction: row; align-items: center; gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🍬 Gomitas Store</h1>
+  <p>Consulta de stock en tiempo real</p>
+</header>
+
+<div class="wrap">
+
+  <!-- STOCK VISIBLE -->
+  <div class="card" style="animation-delay:0.05s">
+    <h2>📦 Stock actual</h2>
+    <div id="listaProductos"></div>
+  </div>
+
+  <!-- CONTACTO Y PAGO -->
+  <div class="card" style="animation-delay:0.15s; text-align:center;">
+    <h2 style="justify-content:center;">🛒 ¿Quieres pedir?</h2>
+
+    <a href="https://wa.me/qr/KJYABR7WJRQTH1" target="_blank" style="display:inline-flex;align-items:center;gap:10px;background:#25d366;color:white;text-decoration:none;font-family:'Fredoka One',cursive;font-size:1.1rem;padding:13px 28px;border-radius:50px;margin-bottom:24px;box-shadow:0 4px 20px rgba(37,211,102,0.4);transition:transform 0.15s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.127 1.528 5.874L0 24l6.302-1.513A11.946 11.946 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.017-1.378l-.36-.214-3.732.895.942-3.64-.235-.374A9.818 9.818 0 1112 21.818z"/></svg>
+      Escríbeme por WhatsApp
+    </a>
+
+    <div style="background:rgba(0,0,0,0.2);border-radius:14px;padding:16px 20px;display:inline-block;">
+      <div style="font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:6px;">Mercado Pago</div>
+      <div style="font-family:'Fredoka One',cursive;font-size:1.1rem;color:var(--blanco);letter-spacing:0.05em;">722969020546483195</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ─────────────────────────────────────────────
+  //  MODIFICA EL STOCK AQUÍ
+  // ─────────────────────────────────────────────
+  const productos = [
+    { nombre: "Gomitas de mango", precio: 20, stock: 12 },
+    { nombre: "Panditas",         precio: 20, stock: 0  },
+    { nombre: "Chocolates",       precio: 20, stock: 3  },
+    { nombre: "Cacahuates",       precio: 15, stock: 15 },
+  ];
+  // ─────────────────────────────────────────────
+
+  // ── ESTADO según rango 0-15 ──
+  function estado(stock) {
+    if (stock === 0)       return { texto: 'Sin stock',    clase: 'badge-ninguno', color: '#f87171', pct: 0   };
+    if (stock <= 5)        return { texto: 'Muy poco',     clase: 'badge-poco',    color: '#fbbf24', pct: Math.round((stock/15)*100) };
+    if (stock <= 10)       return { texto: 'Stock medio',  clase: 'badge-medio',   color: '#60a5fa', pct: Math.round((stock/15)*100) };
+    return                        { texto: 'Bien surtido', clase: 'badge-lleno',   color: '#4ade80', pct: 100 };
+  }
+
+  // ── RENDER PRODUCTOS ──
+  function render() {
+    const lista = document.getElementById('listaProductos');
+    lista.innerHTML = productos.map(p => {
+      const e = estado(p.stock);
+      return `
+        <div class="producto">
+          <div class="prod-info">
+            <div class="prod-nombre">${p.nombre}</div>
+            <div class="prod-precio">$${p.precio} por pieza</div>
+            <div class="barra-wrap">
+              <div class="barra-fill" style="width:${e.pct}%; background:${e.color}"></div>
+            </div>
+          </div>
+          <div class="prod-derecha">
+            <div class="prod-stock">${p.stock}<span>uds</span></div>
+            <span class="badge ${e.clase}">${e.texto}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  render();
+</script>
+</body>
+</html>
