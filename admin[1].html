@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin · Poligomitas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --rosa:   #ba0ce5;
+      --lila:   #c084fc;
+      --morado: #ed8ef4;
+      --oscuro: #e684d4;
+      --blanco: #fff8ff;
+      --texto:  #2d1b4e;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a0030 0%, #3b0764 50%, #4c1d95 100%);
+      background-attachment: fixed;
+      color: var(--blanco);
+    }
+
+    /* ── LOGIN ── */
+    #pantalla-login {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .login-box {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 24px;
+      padding: 40px;
+      width: 100%;
+      max-width: 340px;
+      text-align: center;
+    }
+
+    .login-box h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2rem;
+      margin-bottom: 6px;
+    }
+
+    .login-box p {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.85rem;
+      margin-bottom: 28px;
+    }
+
+    .pin-input {
+      width: 100%;
+      padding: 14px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 12px;
+      color: var(--blanco);
+      font-size: 1.5rem;
+      text-align: center;
+      letter-spacing: 0.4em;
+      font-family: 'Fredoka One', cursive;
+      outline: none;
+      margin-bottom: 16px;
+    }
+
+    .pin-input:focus { border-color: var(--lila); }
+
+    .btn-login {
+      width: 100%;
+      padding: 13px;
+      background: var(--rosa);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-login:hover { opacity: 0.85; }
+
+    .error-msg {
+      color: #fca5a5;
+      font-size: 0.85rem;
+      margin-top: 10px;
+      min-height: 20px;
+    }
+
+    /* ── ADMIN PANEL ── */
+    #pantalla-admin { display: none; }
+
+    header {
+      text-align: center;
+      padding: 40px 20px 20px;
+    }
+
+    header h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      color: var(--blanco);
+    }
+
+    header p { color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-top: 4px; }
+
+    .wrap {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .card h2 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.3rem;
+      color: var(--blanco);
+      margin-bottom: 18px;
+    }
+
+    /* ── FILA PRODUCTO ── */
+    .prod-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 10px;
+    }
+
+    .prod-row-nombre {
+      flex: 1;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1rem;
+    }
+
+    .prod-row-precio {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.5);
+      min-width: 50px;
+      text-align: right;
+    }
+
+    .stock-ctrl {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .stock-ctrl button {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,0.15);
+      color: white;
+      font-size: 1.1rem;
+      cursor: pointer;
+      line-height: 1;
+      transition: background 0.15s;
+    }
+
+    .stock-ctrl button:hover { background: rgba(255,255,255,0.3); }
+
+    .stock-num {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.2rem;
+      min-width: 30px;
+      text-align: center;
+    }
+
+    .btn-guardar {
+      padding: 6px 14px;
+      background: #86efac;
+      color: #14532d;
+      border: none;
+      border-radius: 20px;
+      font-family: 'Fredoka One', cursive;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .btn-guardar:hover { opacity: 0.8; }
+    .btn-guardar.guardado { background: #4ade80; }
+
+    /* ── AGREGAR PRODUCTO ── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 4px;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 9px 12px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 10px;
+      color: var(--blanco);
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .field input:focus { border-color: var(--lila); }
+    .field input::placeholder { color: rgba(255,255,255,0.25); }
+
+    .btn-agregar {
+      width: 100%;
+      padding: 12px;
+      background: var(--rosa);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-agregar:hover { opacity: 0.85; }
+
+    /* ── ELIMINAR ── */
+    .btn-eliminar {
+      padding: 5px 10px;
+      background: rgba(252,165,165,0.2);
+      color: #fca5a5;
+      border: 1px solid rgba(252,165,165,0.3);
+      border-radius: 8px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      transition: background 0.15s;
+    }
+
+    .btn-eliminar:hover { background: rgba(252,165,165,0.35); }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: rgba(76,29,149,0.95);
+      color: white;
+      padding: 11px 24px;
+      border-radius: 50px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: transform 0.3s ease;
+      z-index: 999;
+      white-space: nowrap;
+    }
+
+    #toast.show { transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 480px) {
+      .prod-row { flex-wrap: wrap; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── LOGIN ── -->
+<div id="pantalla-login">
+  <div class="login-box">
+    <h1>🔒 Admin</h1>
+    <p>Ingresa tu PIN para continuar</p>
+    <input type="password" class="pin-input" id="pinInput" maxlength="6" placeholder="••••">
+    <button class="btn-login" onclick="verificarPin()">Entrar</button>
+    <div class="error-msg" id="errorMsg"></div>
+  </div>
+</div>
+
+<!-- ── PANEL ADMIN ── -->
+<div id="pantalla-admin">
+  <header>
+    <h1>🍬 Admin · Poligomitas</h1>
+    <p>Gestiona el stock de tu tienda</p>
+  </header>
+
+  <div class="wrap">
+
+    <!-- STOCK -->
+    <div class="card">
+      <h2>📦 Productos y stock</h2>
+      <div id="listaAdmin"><div style="color:rgba(255,255,255,0.4);font-size:0.9rem">Cargando...</div></div>
+    </div>
+
+    <!-- AGREGAR -->
+    <div class="card">
+      <h2>➕ Agregar producto</h2>
+      <div class="form-grid">
+        <div class="field">
+          <label>Emoji</label>
+          <input type="text" id="nuevoEmoji" placeholder="ej. 🥭" maxlength="4">
+        </div>
+        <div class="field">
+          <label>Nombre</label>
+          <input type="text" id="nuevoNombre" placeholder="ej. Mango enchilado">
+        </div>
+        <div class="field">
+          <label>Precio ($)</label>
+          <input type="number" id="nuevoPrecio" placeholder="20">
+        </div>
+        <div class="field">
+          <label>Stock inicial</label>
+          <input type="number" id="nuevoStock" placeholder="10">
+        </div>
+      </div>
+      <button class="btn-agregar" onclick="agregarProducto()">➕ Agregar producto</button>
+    </div>
+
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, doc, updateDoc, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAKB2Iuvdr1RUdmyhtSeVIUUbbrWzAK72w",
+    authDomain: "gomitasstock.firebaseapp.com",
+    projectId: "gomitasstock",
+    storageBucket: "gomitasstock.firebasestorage.app",
+    messagingSenderId: "116089077999",
+    appId: "1:116089077999:web:1dadc96a897628d97d9b1a"
+  };
+
+  const PIN = "1234"; // ← CAMBIA ESTE PIN
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getFirestore(app);
+
+  // ── LOGIN ──
+  window.verificarPin = function() {
+    const pin = document.getElementById('pinInput').value;
+    if (pin === PIN) {
+      document.getElementById('pantalla-login').style.display = 'none';
+      document.getElementById('pantalla-admin').style.display = 'block';
+      cargarAdmin();
+    } else {
+      document.getElementById('errorMsg').textContent = 'PIN incorrecto, intenta de nuevo.';
+      document.getElementById('pinInput').value = '';
+    }
+  }
+
+  document.getElementById('pinInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') window.verificarPin();
+  });
+
+  // ── TOAST ──
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // ── CARGAR PRODUCTOS ──
+  let productosCache = [];
+
+  async function cargarAdmin() {
+    const lista = document.getElementById('listaAdmin');
+    const snap  = await getDocs(collection(db, 'productos'));
+    productosCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    lista.innerHTML = productosCache.map(p => `
+      <div class="prod-row" id="row-${p.id}">
+        <div class="prod-row-nombre">${p.nombre}</div>
+        <div class="prod-row-precio">$${p.precio}</div>
+        <div class="stock-ctrl">
+          <button onclick="cambiarStock('${p.id}', -1)">−</button>
+          <div class="stock-num" id="stock-${p.id}">${p.stock}</div>
+          <button onclick="cambiarStock('${p.id}', 1)">+</button>
+        </div>
+        <button class="btn-guardar" id="btn-${p.id}" onclick="guardarStock('${p.id}')">Guardar</button>
+        <button class="btn-eliminar" onclick="eliminarProducto('${p.id}')">🗑️</button>
+      </div>
+    `).join('');
+  }
+
+  // ── CAMBIAR STOCK LOCAL ──
+  window.cambiarStock = function(id, delta) {
+    const p = productosCache.find(x => x.id === id);
+    if (!p) return;
+    p.stock = Math.max(0, p.stock + delta);
+    document.getElementById(`stock-${id}`).textContent = p.stock;
+  }
+
+  // ── GUARDAR EN FIREBASE ──
+  window.guardarStock = async function(id) {
+    const p   = productosCache.find(x => x.id === id);
+    const btn = document.getElementById(`btn-${id}`);
+    try {
+      await updateDoc(doc(db, 'productos', id), { stock: p.stock });
+      btn.textContent = '✅ Listo';
+      btn.classList.add('guardado');
+      setTimeout(() => { btn.textContent = 'Guardar'; btn.classList.remove('guardado'); }, 2000);
+      toast(`Stock de ${p.nombre} actualizado`);
+    } catch(e) {
+      toast('Error al guardar.');
+    }
+  }
+
+  // ── AGREGAR PRODUCTO ──
+  window.agregarProducto = async function() {
+    const emoji  = document.getElementById('nuevoEmoji').value.trim();
+    const nombre = document.getElementById('nuevoNombre').value.trim();
+    const precio = Number(document.getElementById('nuevoPrecio').value);
+    const stock  = Number(document.getElementById('nuevoStock').value);
+
+    if (!nombre || !precio) { toast('Completa nombre y precio.'); return; }
+
+    const nombreFinal = emoji ? `${emoji} ${nombre}` : nombre;
+
+    try {
+      await addDoc(collection(db, 'productos'), { nombre: nombreFinal, precio, stock: stock || 0 });
+      document.getElementById('nuevoEmoji').value  = '';
+      document.getElementById('nuevoNombre').value = '';
+      document.getElementById('nuevoPrecio').value = '';
+      document.getElementById('nuevoStock').value  = '';
+      toast(`✅ ${nombreFinal} agregado`);
+      cargarAdmin();
+    } catch(e) {
+      toast('Error al agregar.');
+    }
+  }
+
+  // ── ELIMINAR PRODUCTO ──
+  window.eliminarProducto = async function(id) {
+    const p = productosCache.find(x => x.id === id);
+    if (!confirm(`¿Eliminar ${p.nombre}?`)) return;
+    try {
+      await deleteDoc(doc(db, 'productos', id));
+      toast(`🗑️ ${p.nombre} eliminado`);
+      cargarAdmin();
+    } catch(e) {
+      toast('Error al eliminar.');
+    }
+  }
+</script>
+</body>
+</html>
